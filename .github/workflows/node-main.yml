@@ -5,11 +5,11 @@ on:
     branches:
       - main
 
-env:
-  working-directory: ./packages/node
-defaults:
-  run:
-    working-directory: ${{ env.working-directory }}
+# env:
+#   working-directory: ./packages/node
+# defaults:
+#   run:
+#     working-directory: ${{ env.working-directory }}
 
 jobs:
   check-version:
@@ -30,11 +30,11 @@ jobs:
         # if this step fails, the workflow will stop
 
   suite:
-    # env:
-    #   working-directory: ./packages/node
-    # defaults:
-    #   run:
-    #     working-directory: ${{ env.working-directory }}
+    env:
+      working-directory: ./packages/node
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
     runs-on: ubuntu-latest
     needs: check-version
     steps:
@@ -57,11 +57,11 @@ jobs:
 
   publish-npm:
     needs: [suite, check-version]
-    # env:
-    #   working-directory: ./packages/node
-    # defaults:
-    #   run:
-    #     working-directory: ${{ env.working-directory }}
+    env:
+      working-directory: ./packages/node
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
