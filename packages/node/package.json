@@ -1,0 +1,24 @@
+{
+  "name": "dnable",
+  "version": "0.1.0",
+  "description": "Simple, lightweight, and fast Node.js module for enabling DNA sequences.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dna",
+    "enable",
+    "sequence",
+    "bioinformatics",
+    "rna",
+    "translate",
+    "transcription"
+  ],
+  "author": "m10rten",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.14.0",
+    "typescript": "^4.9.5"
+  }
+}
