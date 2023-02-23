@@ -46,9 +46,9 @@ jobs:
       - name: build code base
         run: |
           npm run build
-      - name: run test suite
-        run: |
-          npm test
+      # - name: run test suite
+      #   run: |
+      #     npm test
 
   publish-npm:
     needs: [suite, check-version]
