@@ -1,6 +1,6 @@
 {
 	"name": "dnable",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Simple, lightweight, and fast Node.js module for enabling DNA sequences.",
 	"main": "dist/index.js",
 	"scripts": {
