@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "packages/node/**"
+      - ".github/workflows/node-main.yml"
     branches:
       - main
 

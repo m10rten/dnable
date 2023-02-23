@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "packages/node/**"
+      - ".github/workflows/node-dev.yml"
     branches:
       - dev
       - main

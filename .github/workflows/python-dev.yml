@@ -4,22 +4,22 @@ on:
   pull_request:
     paths:
       - "packages/python/**"
+      - ".github/workflows/python-dev.yml"
     branches:
       - dev
       - main
 
 env:
   DIRECTORY: ./packages/python
+# jobs:
+#   check-version:
+#     runs-on: ubuntu-latest
 
-jobs:
-  check-version:
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ${{ env.DIRECTORY }}
-    steps:
-      uses: actions/checkout@v3
-      uses: actions/setup-python@v3
-        with:
-          python-version: 3.10.x
+#     defaults:
+#       run:
+#         working-directory: ${{ env.DIRECTORY }}
+#     steps:
+#       uses: actions/checkout@v3
+#       uses: actions/setup-python@v3
+#         with:
+#           python-version: 3.10.x
