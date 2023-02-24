@@ -1,7 +1,30 @@
 const DNA = ["A", "C", "G", "T"] as const;
-type DNA = typeof DNA[number];
-const DNABits = ["00", "01", "10", "11"] as const;
-type DNABits = typeof DNABits[number];
+const RNA = ["A", "C", "G", "U"] as const;
+const Bits = ["00", "01", "10", "11"] as const;
+
+export type DNA = typeof DNA[number];
+export type RNA = typeof RNA[number];
+export type Bits = typeof Bits[number];
+
+enum Codex {
+	A = "00",
+	C = "01",
+	G = "10",
+	T = "11",
+	U = "01",
+}
+const CideDNA = {
+	"00": "A",
+	"01": "C",
+	"10": "G",
+	"11": "T",
+} as const;
+const CideRNA = {
+	"00": "A",
+	"01": "C",
+	"10": "G",
+	"11": "U",
+} as const;
 
 type BinaryOpts = 0 | 1;
 type Byte = `${BinaryOpts}${BinaryOpts}${BinaryOpts}${BinaryOpts}${BinaryOpts}${BinaryOpts}${BinaryOpts}${BinaryOpts}`;
@@ -25,73 +48,90 @@ async function binaryToText(bytes: string) {
 	return res.join("");
 }
 
-const getBit = (dna: DNA): DNABits => {
-	switch (dna) {
+const getBit = (code: DNA | RNA): Bits => {
+	switch (code) {
 		case "A":
-			return "00";
+			return Codex.A;
 		case "C":
-			return "01";
+			return Codex.C;
 		case "G":
-			return "10";
+			return Codex.G;
 		case "T":
-			return "11";
+			return Codex.T;
+		case "U":
+			return Codex.U;
 		default:
 			throw new Error("Invalid DNA");
 	}
 };
 
-const getDNA = (bit: DNABits): DNA => {
+const getDNA = (bit: Bits): DNA => {
 	switch (bit) {
 		case "00":
-			return "A";
+			return CideDNA["00"];
 		case "01":
-			return "C";
+			return CideDNA["01"];
 		case "10":
-			return "G";
+			return CideDNA["10"];
 		case "11":
-			return "T";
+			return CideDNA["11"];
 		default:
 			throw new Error("Invalid bits");
 	}
 };
 
-async function BinaryToDNA(str: string): Promise<DNA[]> {
+const getRNA = (bit: Bits): RNA => {
+	switch (bit) {
+		case "00":
+			return CideRNA["00"];
+		case "01":
+			return CideRNA["01"];
+		case "10":
+			return CideRNA["10"];
+		case "11":
+			return CideRNA["11"];
+		default:
+			throw new Error("Invalid RNA");
+	}
+};
+
+async function BinaryTo(str: string, type: "rna" | "dna"): Promise<Array<string>> {
 	// split string in spaces
 	const split = str.split(" ");
-	const res: DNA[] = [];
+	const res = [];
 	for (const c of split) {
 		// split string in sets of 2
 		const set = c.match(/.{1,2}/g);
 		if (!set) throw new Error("binary string is not divided in bytes.");
 		for (const s of set) {
-			const dna = getDNA(s as DNABits);
-			res.push(dna);
+			const code = type === "dna" ? getDNA(s as Bits) : getRNA(s as Bits);
+			res.push(code as DNA | RNA);
 		}
 	}
 	return res;
 }
 
-async function DNAToBinary(str: string): Promise<string> {
+async function convertToBinary(str: string): Promise<string> {
 	// split the string in sets of 4 characters (AAAA eg) = 1 byte
 	const match = str.match(/.{1,4}/g);
 	if (!match) throw new Error("DNA string is not divided in bytes.");
 
-	const res = [];
+	const res: Byte[] = [];
 	for (const m of match) {
-		const set = [];
+		const set: Bits[] = [];
 		for (const c of m) {
-			const binary = getBit(c as DNA);
+			const binary: Bits = getBit(c as DNA | RNA);
 			set.push(binary);
 		}
 		const joined = set.join("");
-		res.push(joined);
+		res.push(joined as Byte);
 	}
 
 	return res.join(" ");
 }
 
 export async function toText(str: string): Promise<string> {
-	const binary = await DNAToBinary(str);
+	const binary = await convertToBinary(str);
 	const text = await binaryToText(binary);
 	return text;
 }
@@ -101,8 +141,19 @@ export async function toDNA(str: string): Promise<string> {
 	const res: DNA[] = [];
 	for (const c of chars) {
 		const binary = await toBinary(c);
-		const dna = await BinaryToDNA(binary);
-		res.push(...dna);
+		const dna = await BinaryTo(binary, "dna");
+		res.push(...(dna as DNA[]));
+	}
+	return res.join("");
+}
+
+export async function toRNA(str: string): Promise<string> {
+	const chars = str.split("");
+	const res: RNA[] = [];
+	for (const c of chars) {
+		const binary = await toBinary(c);
+		const rna = await BinaryTo(binary, "rna");
+		res.push(...(rna as RNA[]));
 	}
 	return res.join("");
 }
